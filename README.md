@@ -48,6 +48,7 @@ Acesse [http://localhost:3000](http://localhost:3000) no navegador.
 - [Next.js 16](https://nextjs.org/)
 - [React 19](https://react.dev/)
 - [Tailwind CSS 4](https://tailwindcss.com/)
+- [daisyUI](https://daisyui.com/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/)
 - [Husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged)
