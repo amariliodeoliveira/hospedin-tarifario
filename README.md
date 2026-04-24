@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# hospedin-tarifario
+
+Calculadora de tarifário hoteleiro desenvolvida como desafio técnico para a Hospedin.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) v24.15.0
+- [npm](https://www.npmjs.com/) v11.12.1
+
+> Recomendado usar [Volta](https://volta.sh/) para gerenciar as versões automaticamente.
+
+### Installation
 
 ```bash
+git clone https://github.com/SEU_USUARIO/hospedin-tarifario.git
+cd hospedin-tarifario
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Acesse [http://localhost:3000](http://localhost:3000) no navegador.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script                 | Description                                |
+| ---------------------- | ------------------------------------------ |
+| `npm run dev`          | Starts the development server              |
+| `npm run build`        | Builds the application for production      |
+| `npm run start`        | Starts the production server               |
+| `npm run lint`         | Runs ESLint                                |
+| `npm run lint:fix`     | Runs ESLint and fixes issues               |
+| `npm run format`       | Formats files with Prettier                |
+| `npm run format:check` | Checks formatting without applying changes |
+| `npm run type-check`   | Runs TypeScript type checking              |
 
-## Learn More
+## Implemented Rules
 
-To learn more about Next.js, take a look at the following resources:
+> To be filled after implementation.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Technical Decisions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+> To be filled after implementation.
 
-## Deploy on Vercel
+## Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Next.js 16](https://nextjs.org/)
+- [React 19](https://react.dev/)
+- [Tailwind CSS 4](https://tailwindcss.com/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [ESLint](https://eslint.org/) + [Prettier](https://prettier.io/)
+- [Husky](https://typicode.github.io/husky/) + [lint-staged](https://github.com/lint-staged/lint-staged)
