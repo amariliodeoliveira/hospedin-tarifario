@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useRef } from "react";
+
 import { HomeIcon } from "@heroicons/react/20/solid";
-import { FieldButton } from "@ui/FieldButton";
+
+import FieldButton from "@/components/ui/FieldButton";
 
 const accommodations = [
   { id: "suite", name: "Suíte Jardim", description: "Ambiente mais acolhedor" },

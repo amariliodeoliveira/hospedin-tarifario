@@ -9,7 +9,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   anchorName?: string;
 }
 
-export function FieldButton({
+export default function FieldButton({
   label,
   variant = "ghost",
   popoverTarget,

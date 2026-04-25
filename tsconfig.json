@@ -22,6 +22,7 @@
       "@/*": ["./src/*"],
       "@img/*": ["./public/image/*"],
       "@components/*": ["./src/components/*"],
+      "@layout/*": ["./src/components/layout/*"],
       "@ui/*": ["./src/components/ui/*"]
     }
   },

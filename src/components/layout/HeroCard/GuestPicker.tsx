@@ -2,8 +2,8 @@
 
 import { useRef, useState } from "react";
 
-import { FieldButton } from "@ui/FieldButton";
-import { Counter } from "@ui/Counter";
+import Counter from "@/components/ui/Counter";
+import FieldButton from "@/components/ui/FieldButton";
 
 interface Props {
   onMouseEnter?: () => void;

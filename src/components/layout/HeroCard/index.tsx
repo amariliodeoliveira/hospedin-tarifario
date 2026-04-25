@@ -5,7 +5,8 @@ import { useState, useRef } from "react";
 import { AccommodationPicker } from "./AccommodationPicker";
 import { DateRangePicker } from "./DateRangePicker";
 import { GuestPicker } from "./GuestPicker";
-import { FieldButton } from "../ui/FieldButton";
+
+import FieldButton from "@/components/ui/FieldButton";
 
 export default function HeroCard() {
   const [hoveredSection, setHoveredSection] = useState<

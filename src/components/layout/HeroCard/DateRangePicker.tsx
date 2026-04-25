@@ -1,10 +1,13 @@
 "use client";
 
 import { useState, useRef } from "react";
+
 import { DateRange, DayPicker } from "react-day-picker";
 import { ptBR } from "react-day-picker/locale";
+
 import { addDays } from "@/utils/date";
-import { FieldButton } from "@ui/FieldButton";
+
+import FieldButton from "@/components/ui/FieldButton";
 
 interface Props {
   onMouseEnter?: () => void;
