@@ -9,7 +9,7 @@ export default function Hero({
 }) {
   return (
     <div
-      className="hero bg-base-200 text-neutral-content min-h-screen bg-cover bg-center"
+      className="hero bg-base-200 min-h-screen bg-cover bg-center"
       style={
         backgroundImage
           ? { backgroundImage: `url(${backgroundImage.src})` }
@@ -17,7 +17,7 @@ export default function Hero({
       }
     >
       <div className={`hero-overlay ${backgroundImage ? "" : "hidden"}`} />
-      <div className="hero-content">{children}</div>
+      <div className="hero-content w-full max-w-4xl">{children}</div>
     </div>
   );
 }
