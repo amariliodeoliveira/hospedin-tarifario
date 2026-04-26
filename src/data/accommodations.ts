@@ -5,6 +5,7 @@ export interface Accommodation {
   dailyRate: number;
   cleaningFee: number;
   minNights: number;
+  maxGuests: number;
 }
 
 export const accommodations: Accommodation[] = [
@@ -15,6 +16,7 @@ export const accommodations: Accommodation[] = [
     dailyRate: 300,
     cleaningFee: 80,
     minNights: 2,
+    maxGuests: 2,
   },
   {
     id: "chale",
@@ -23,5 +25,6 @@ export const accommodations: Accommodation[] = [
     dailyRate: 450,
     cleaningFee: 100,
     minNights: 2,
+    maxGuests: 4,
   },
 ];

@@ -1,7 +1,13 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef, useState } from "react";
+import { DateRange } from "react-day-picker";
 
+import {
+  calculateTarifario,
+  TarifarioResult,
+} from "@/utils/calculateTarifario";
+import { Accommodation } from "@data/accommodations";
 import FieldButton from "@ui/FieldButton";
 
 import { AccommodationPicker } from "./AccommodationPicker";
@@ -20,13 +26,35 @@ function Divider({ hidden }: { hidden: boolean }) {
 
 export default function HeroCard() {
   const [hoveredSection, setHoveredSection] = useState<Section | null>(null);
+  const [accommodation, setAccommodation] = useState<Accommodation | null>(
+    null,
+  );
+  const [range, setRange] = useState<DateRange | undefined>();
+  const [adults, setAdults] = useState(0);
+
   const datePopoverRef = useRef<HTMLDivElement>(null);
   const guestPopoverRef = useRef<HTMLDivElement>(null);
 
+  const [, setResult] = useState<TarifarioResult | null>(null);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!accommodation || !range?.from || !range?.to) return;
+
+    const tarifario = calculateTarifario({ accommodation, range, adults });
+    setResult(tarifario);
+    alert(JSON.stringify(tarifario, null, 2));
+  }
+
   return (
-    <div className="card join join-vertical lg:join-horizontal bg-base-100 relative w-full shadow-sm">
+    <form
+      className="card join join-vertical lg:join-horizontal bg-base-100 relative w-full shadow-sm"
+      onSubmit={handleSubmit}
+    >
       <AccommodationPicker
         className="flex-1"
+        value={accommodation}
+        onChange={setAccommodation}
         onMouseEnter={() => setHoveredSection("accommodation")}
         onMouseLeave={() => setHoveredSection(null)}
         onSelect={() => datePopoverRef.current?.showPopover()}
@@ -36,6 +64,8 @@ export default function HeroCard() {
 
       <DateRangePicker
         className="flex-1"
+        value={range}
+        onChange={setRange}
         popoverRef={datePopoverRef}
         onClose={() => guestPopoverRef.current?.showPopover()}
         onMouseEnter={() => setHoveredSection("dates")}
@@ -46,16 +76,22 @@ export default function HeroCard() {
 
       <GuestPicker
         className="join-item flex-1"
+        value={adults}
+        onChange={setAdults}
         popoverRef={guestPopoverRef}
         onMouseEnter={() => setHoveredSection("adults")}
         onMouseLeave={() => setHoveredSection(null)}
       />
 
-      <div className="join-item">
-        <FieldButton className="h-full rounded-l-none" variant="primary">
+      <div className="join-item self-stretch">
+        <FieldButton
+          type="submit"
+          className="h-full rounded-l-none"
+          variant="primary"
+        >
           <span className="font-medium">Calcular</span>
         </FieldButton>
       </div>
-    </div>
+    </form>
   );
 }

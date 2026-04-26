@@ -1,12 +1,14 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 import { PickerProps } from "@/types/picker";
 import Counter from "@ui/Counter";
 import FieldButton from "@ui/FieldButton";
 
 interface Props extends PickerProps {
+  value: number;
+  onChange: (adults: number) => void;
   popoverRef?: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -19,9 +21,10 @@ export function GuestPicker({
   onMouseEnter,
   onMouseLeave,
   className,
+  value,
+  onChange,
   popoverRef: externalRef,
 }: Props) {
-  const [adults, setAdults] = useState(0);
   const internalRef = useRef<HTMLDivElement>(null);
   const popoverRef = externalRef ?? internalRef;
 
@@ -37,11 +40,13 @@ export function GuestPicker({
         anchorName="--anchor-guests"
         className="size-full"
       >
-        {formatGuests(adults)}
+        {formatGuests(value)}
       </FieldButton>
 
       <div
         ref={popoverRef}
+        role="dialog"
+        aria-label="Selecione o número de hóspedes"
         className="dropdown card bg-base-100 mt-2 w-64 shadow-sm"
         popover="auto"
         id="popover-guests"
@@ -49,8 +54,15 @@ export function GuestPicker({
       >
         <div className="card-body p-4">
           <div className="flex items-center justify-between">
-            <p className="text-base">Adultos</p>
-            <Counter value={adults} min={0} onChange={setAdults} />
+            <p className="text-base" id="adults-label">
+              Adultos
+            </p>
+            <Counter
+              value={value}
+              min={0}
+              onChange={onChange}
+              aria-labelledby="adults-label"
+            />
           </div>
         </div>
       </div>

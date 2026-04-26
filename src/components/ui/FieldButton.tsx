@@ -23,16 +23,22 @@ export default function FieldButton({
   anchorName,
   className,
   children,
+  type = "button",
   ...props
 }: Props) {
   return (
     <button
+      type={type}
       popoverTarget={popoverTarget}
       className={`btn ${variantClass[variant]} btn-xl h-auto flex-col items-start gap-1 px-6 py-4 ${className ?? ""}`.trim()}
       style={anchorName ? ({ anchorName } as React.CSSProperties) : undefined}
       {...props}
     >
-      {label && <span className="text-xs font-semibold">{label}</span>}
+      {label && (
+        <span className="text-xs font-semibold" aria-hidden="true">
+          {label}
+        </span>
+      )}
       <span
         className={`text-sm font-normal ${variant === "ghost" ? "text-base-content/60" : ""}`}
       >
