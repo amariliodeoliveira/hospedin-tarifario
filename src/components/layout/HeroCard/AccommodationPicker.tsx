@@ -1,25 +1,42 @@
 "use client";
 
-import { useState, useRef } from "react";
-
 import { HomeIcon } from "@heroicons/react/20/solid";
+import { useRef, useState } from "react";
 
-import FieldButton from "@/components/ui/FieldButton";
+import { PickerProps } from "@/types/picker";
+import { Accommodation, accommodations } from "@data/accommodations";
+import FieldButton from "@ui/FieldButton";
+import { hidePopover } from "@utils/popover";
 
-const accommodations = [
-  { id: "suite", name: "Suíte Jardim", description: "Ambiente mais acolhedor" },
-  {
-    id: "chale",
-    name: "Chalé Família",
-    description: "Espaço amplo para toda a família",
-  },
-];
-
-interface Props {
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
-  className?: string;
+interface Props extends PickerProps {
   onSelect?: () => void;
+}
+
+function AccommodationOption({
+  accommodation,
+  onSelect,
+}: {
+  accommodation: Accommodation;
+  onSelect: (name: string) => void;
+}) {
+  return (
+    <li>
+      <a
+        className="flex items-center gap-3 p-3"
+        onClick={() => onSelect(accommodation.name)}
+      >
+        <div className="bg-base-200 text-primary rounded-lg p-2">
+          <HomeIcon className="size-6" />
+        </div>
+        <div>
+          <p className="text-sm font-semibold">{accommodation.name}</p>
+          <p className="text-base-content/60 text-xs">
+            {accommodation.description}
+          </p>
+        </div>
+      </a>
+    </li>
+  );
 }
 
 export function AccommodationPicker({
@@ -30,6 +47,12 @@ export function AccommodationPicker({
 }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
   const popoverRef = useRef<HTMLUListElement>(null);
+
+  function handleSelect(name: string) {
+    setSelected(name);
+    hidePopover(popoverRef.current);
+    onSelect?.();
+  }
 
   return (
     <div
@@ -56,30 +79,11 @@ export function AccommodationPicker({
         }
       >
         {accommodations.map((item) => (
-          <li key={item.id}>
-            <a
-              className="flex items-center gap-3 p-3"
-              onClick={() => {
-                setSelected(item.name);
-                (
-                  popoverRef.current as HTMLElement & {
-                    hidePopover: () => void;
-                  }
-                )?.hidePopover();
-                onSelect?.();
-              }}
-            >
-              <div className="bg-base-200 text-primary rounded-lg p-2">
-                <HomeIcon className="size-6" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">{item.name}</p>
-                <p className="text-base-content/60 text-xs">
-                  {item.description}
-                </p>
-              </div>
-            </a>
-          </li>
+          <AccommodationOption
+            key={item.id}
+            accommodation={item}
+            onSelect={handleSelect}
+          />
         ))}
       </ul>
     </div>

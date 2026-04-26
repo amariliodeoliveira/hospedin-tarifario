@@ -6,11 +6,19 @@ interface Props {
 }
 
 export default function Counter({ value, min = 0, max = 99, onChange }: Props) {
+  function decrement() {
+    onChange(Math.max(min, value - 1));
+  }
+
+  function increment() {
+    onChange(Math.min(max, value + 1));
+  }
+
   return (
     <div className="flex items-center gap-2">
       <button
         className="btn btn-circle btn-sm"
-        onClick={() => onChange(Math.max(min, value - 1))}
+        onClick={decrement}
         disabled={value <= min}
       >
         −
@@ -20,7 +28,7 @@ export default function Counter({ value, min = 0, max = 99, onChange }: Props) {
 
       <button
         className="btn btn-circle btn-sm"
-        onClick={() => onChange(Math.min(max, value + 1))}
+        onClick={increment}
         disabled={value >= max}
       >
         +

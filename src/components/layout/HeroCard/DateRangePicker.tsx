@@ -1,21 +1,20 @@
 "use client";
 
-import { useState, useRef } from "react";
-
+import { useRef, useMemo, useState } from "react";
 import { DateRange, DayPicker } from "react-day-picker";
 import { ptBR } from "react-day-picker/locale";
 
-import { addDays } from "@/utils/date";
+import { PickerProps } from "@/types/picker";
+import FieldButton from "@ui/FieldButton";
+import { addDays, formatDateRange } from "@utils/date";
+import { hidePopover } from "@utils/popover";
 
-import FieldButton from "@/components/ui/FieldButton";
-
-interface Props {
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
-  className?: string;
+interface Props extends PickerProps {
   popoverRef?: React.RefObject<HTMLDivElement | null>;
   onClose?: () => void;
 }
+
+const TODAY = new Date();
 
 export function DateRangePicker({
   onMouseEnter,
@@ -25,7 +24,7 @@ export function DateRangePicker({
   onClose,
 }: Props) {
   const [range, setRange] = useState<DateRange | undefined>();
-  const tomorrow = addDays(new Date(), 1);
+  const tomorrow = useMemo(() => addDays(TODAY, 1), []);
 
   const internalRef = useRef<HTMLDivElement>(null);
   const popoverRef = externalRef ?? internalRef;
@@ -33,18 +32,9 @@ export function DateRangePicker({
   function handleSelect(range: DateRange | undefined) {
     setRange(range);
     if (range?.to) {
-      (
-        popoverRef.current as HTMLElement & { hidePopover: () => void }
-      )?.hidePopover();
+      hidePopover(popoverRef.current);
       onClose?.();
     }
-  }
-
-  function formatRange(): React.ReactNode {
-    if (range?.from && range?.to)
-      return `${range.from.toLocaleDateString()} — ${range.to.toLocaleDateString()}`;
-    if (range?.from) return `${range.from.toLocaleDateString()}`;
-    return <span className="flex items-center gap-4">Insira as datas</span>;
   }
 
   return (
@@ -59,7 +49,7 @@ export function DateRangePicker({
         popoverTarget="rdp-popover"
         anchorName="--rdp"
       >
-        {formatRange()}
+        {formatDateRange(range)}
       </FieldButton>
 
       <div
@@ -71,7 +61,7 @@ export function DateRangePicker({
       >
         <DayPicker
           className="react-day-picker"
-          startMonth={new Date()}
+          startMonth={TODAY}
           numberOfMonths={2}
           locale={ptBR}
           timeZone="Brazil/East"

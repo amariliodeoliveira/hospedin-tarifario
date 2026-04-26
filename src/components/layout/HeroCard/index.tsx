@@ -2,17 +2,24 @@
 
 import { useState, useRef } from "react";
 
+import FieldButton from "@ui/FieldButton";
+
 import { AccommodationPicker } from "./AccommodationPicker";
 import { DateRangePicker } from "./DateRangePicker";
 import { GuestPicker } from "./GuestPicker";
 
-import FieldButton from "@/components/ui/FieldButton";
+type Section = "dates" | "adults" | "accommodation";
+
+function Divider({ hidden }: { hidden: boolean }) {
+  return (
+    <div
+      className={`divider lg:divider-horizontal m-0 w-0 py-2 transition-opacity ${hidden ? "opacity-0" : "opacity-100"}`}
+    />
+  );
+}
 
 export default function HeroCard() {
-  const [hoveredSection, setHoveredSection] = useState<
-    "dates" | "adults" | "accommodation" | null
-  >(null);
-
+  const [hoveredSection, setHoveredSection] = useState<Section | null>(null);
   const datePopoverRef = useRef<HTMLDivElement>(null);
   const guestPopoverRef = useRef<HTMLDivElement>(null);
 
@@ -25,9 +32,7 @@ export default function HeroCard() {
         onSelect={() => datePopoverRef.current?.showPopover()}
       />
 
-      <div
-        className={`divider lg:divider-horizontal m-0 w-0 py-2 transition-opacity ${hoveredSection ? "opacity-0" : "opacity-100"}`}
-      />
+      <Divider hidden={!!hoveredSection} />
 
       <DateRangePicker
         className="flex-1"
@@ -37,9 +42,7 @@ export default function HeroCard() {
         onMouseLeave={() => setHoveredSection(null)}
       />
 
-      <div
-        className={`divider lg:divider-horizontal m-0 w-0 py-2 transition-opacity ${hoveredSection ? "opacity-0" : "opacity-100"}`}
-      />
+      <Divider hidden={!!hoveredSection} />
 
       <GuestPicker
         className="join-item flex-1"
@@ -50,7 +53,7 @@ export default function HeroCard() {
 
       <div className="join-item">
         <FieldButton className="h-full rounded-l-none" variant="primary">
-          Calcular
+          <span className="font-medium">Calcular</span>
         </FieldButton>
       </div>
     </div>

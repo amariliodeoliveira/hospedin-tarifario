@@ -1,10 +1,10 @@
 @import "tailwindcss";
+
 @theme {
   --font-sans: var(--font-poppins);
 }
 
 @plugin "daisyui";
-
 @plugin "daisyui/theme" {
   name: "bumblebee";
   default: true;

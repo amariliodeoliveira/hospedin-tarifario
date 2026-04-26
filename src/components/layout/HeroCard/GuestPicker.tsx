@@ -2,14 +2,17 @@
 
 import { useRef, useState } from "react";
 
-import Counter from "@/components/ui/Counter";
-import FieldButton from "@/components/ui/FieldButton";
+import { PickerProps } from "@/types/picker";
+import Counter from "@ui/Counter";
+import FieldButton from "@ui/FieldButton";
 
-interface Props {
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
-  className?: string;
+interface Props extends PickerProps {
   popoverRef?: React.RefObject<HTMLDivElement | null>;
+}
+
+function formatGuests(adults: number): string {
+  if (adults === 0) return "Hóspedes?";
+  return `${adults} hóspede${adults > 1 ? "s" : ""}`;
 }
 
 export function GuestPicker({
@@ -18,9 +21,9 @@ export function GuestPicker({
   className,
   popoverRef: externalRef,
 }: Props) {
+  const [adults, setAdults] = useState(0);
   const internalRef = useRef<HTMLDivElement>(null);
   const popoverRef = externalRef ?? internalRef;
-  const [adults, setAdults] = useState(0);
 
   return (
     <div
@@ -34,14 +37,12 @@ export function GuestPicker({
         anchorName="--anchor-guests"
         className="size-full"
       >
-        {adults === 0
-          ? "Hóspedes?"
-          : `${adults} hóspede${adults > 1 ? "s" : ""}`}
+        {formatGuests(adults)}
       </FieldButton>
 
       <div
-        className="dropdown card bg-base-100 mt-2 w-64 shadow-sm"
         ref={popoverRef}
+        className="dropdown card bg-base-100 mt-2 w-64 shadow-sm"
         popover="auto"
         id="popover-guests"
         style={{ positionAnchor: "--anchor-guests" } as React.CSSProperties}

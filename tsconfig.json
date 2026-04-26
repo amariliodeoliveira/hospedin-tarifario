@@ -21,9 +21,10 @@
     "paths": {
       "@/*": ["./src/*"],
       "@img/*": ["./public/image/*"],
-      "@components/*": ["./src/components/*"],
       "@layout/*": ["./src/components/layout/*"],
-      "@ui/*": ["./src/components/ui/*"]
+      "@ui/*": ["./src/components/ui/*"],
+      "@data/*": ["./src/data/*"],
+      "@utils/*": ["./src/utils/*"]
     }
   },
   "include": [

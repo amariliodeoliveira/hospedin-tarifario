@@ -1,7 +1,6 @@
 import HeroBg from "@img/hero-bg.jpeg";
-
-import Hero from "@/components/Hero";
-import HeroCard from "@/components/layout/HeroCard";
+import Hero from "@layout/Hero";
+import HeroCard from "@layout/HeroCard";
 
 export default function Home() {
   return (
