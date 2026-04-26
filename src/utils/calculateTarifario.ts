@@ -2,6 +2,11 @@ import { DateRange } from "react-day-picker";
 
 import { Accommodation } from "@data/accommodations";
 
+const WEEKEND_SURCHARGE_RATE = 0.2;
+const LONG_STAY_DISCOUNT_RATE = 0.1;
+const LONG_STAY_MIN_NIGHTS = 7;
+const EXTRA_GUEST_RATE_PER_NIGHT = 50;
+
 interface TarifarioInput {
   accommodation: Accommodation;
   range: DateRange;
@@ -13,7 +18,10 @@ export interface TarifarioResult {
   nights: number;
   dailiesTotal: number;
   weekendSurcharge: number;
+  adults: number;
   extraGuestFee: number;
+  extraGuests: number;
+  maxGuests: number;
   discount: number;
   cleaningFee: number;
   total: number;
@@ -43,14 +51,13 @@ export function calculateTarifario({
   const days = eachDay(from!, to!);
   const nights = days.length;
 
-  // Diárias com acréscimo de fim de semana
   let dailiesTotal = 0;
   let weekendSurcharge = 0;
 
   for (const day of days) {
     const rate = accommodation.dailyRate;
     if (isWeekend(day)) {
-      const surcharge = rate * 0.2;
+      const surcharge = rate * WEEKEND_SURCHARGE_RATE;
       weekendSurcharge += surcharge;
       dailiesTotal += rate + surcharge;
     } else {
@@ -58,16 +65,12 @@ export function calculateTarifario({
     }
   }
 
-  // Hóspedes extras
   const extraGuests = Math.max(0, adults - accommodation.maxGuests);
-  const extraGuestFee = extraGuests * 50 * nights;
+  const extraGuestFee = extraGuests * EXTRA_GUEST_RATE_PER_NIGHT * nights;
 
-  // Subtotal antes do desconto
   const subtotal = dailiesTotal + extraGuestFee;
-
-  // Desconto de 10% para mais de 7 noites
-  const discount = nights > 7 ? subtotal * 0.1 : 0;
-
+  const discount =
+    nights > LONG_STAY_MIN_NIGHTS ? subtotal * LONG_STAY_DISCOUNT_RATE : 0;
   const total = subtotal - discount + accommodation.cleaningFee;
 
   return {
@@ -75,7 +78,10 @@ export function calculateTarifario({
     nights,
     dailiesTotal,
     weekendSurcharge,
+    adults,
     extraGuestFee,
+    extraGuests,
+    maxGuests: accommodation.maxGuests,
     discount,
     cleaningFee: accommodation.cleaningFee,
     total,

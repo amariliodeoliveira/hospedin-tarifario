@@ -3,6 +3,7 @@
 import { useRef } from "react";
 
 import { PickerProps } from "@/types/picker";
+import { pluralize } from "@/utils/string";
 import Counter from "@ui/Counter";
 import FieldButton from "@ui/FieldButton";
 
@@ -14,7 +15,7 @@ interface Props extends PickerProps {
 
 function formatGuests(adults: number): string {
   if (adults === 0) return "Hóspedes?";
-  return `${adults} hóspede${adults > 1 ? "s" : ""}`;
+  return pluralize(adults, "hóspede", "hóspedes");
 }
 
 export function GuestPicker({
