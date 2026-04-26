@@ -1,7 +1,7 @@
 "use client";
 
 import { HomeIcon } from "@heroicons/react/20/solid";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 import { PickerProps } from "@/types/picker";
 import { Accommodation, accommodations } from "@data/accommodations";
@@ -9,6 +9,8 @@ import FieldButton from "@ui/FieldButton";
 import { hidePopover } from "@utils/popover";
 
 interface Props extends PickerProps {
+  value: Accommodation | null;
+  onChange: (accommodation: Accommodation) => void;
   onSelect?: () => void;
 }
 
@@ -17,13 +19,13 @@ function AccommodationOption({
   onSelect,
 }: {
   accommodation: Accommodation;
-  onSelect: (name: string) => void;
+  onSelect: (accommodation: Accommodation) => void;
 }) {
   return (
-    <li>
+    <li role="option" aria-selected={false}>
       <a
         className="flex items-center gap-3 p-3"
-        onClick={() => onSelect(accommodation.name)}
+        onClick={() => onSelect(accommodation)}
       >
         <div className="bg-base-200 text-primary rounded-lg p-2">
           <HomeIcon className="size-6" />
@@ -43,13 +45,14 @@ export function AccommodationPicker({
   onMouseEnter,
   onMouseLeave,
   className,
+  value,
+  onChange,
   onSelect,
 }: Props) {
-  const [selected, setSelected] = useState<string | null>(null);
   const popoverRef = useRef<HTMLUListElement>(null);
 
-  function handleSelect(name: string) {
-    setSelected(name);
+  function handleSelect(accommodation: Accommodation) {
+    onChange(accommodation);
     hidePopover(popoverRef.current);
     onSelect?.();
   }
@@ -66,11 +69,13 @@ export function AccommodationPicker({
         anchorName="--anchor-accommodation"
         className="size-full"
       >
-        {selected ?? "Acomodação"}
+        {value?.name ?? "Acomodação"}
       </FieldButton>
 
       <ul
         ref={popoverRef}
+        role="listbox"
+        aria-label="Selecione uma acomodação"
         className="dropdown menu rounded-box bg-base-100 mt-2 shadow-sm"
         popover="auto"
         id="popover-accommodation"
