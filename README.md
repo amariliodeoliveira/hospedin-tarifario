@@ -91,7 +91,7 @@ import { hidePopover } from "@utils/popover";
 Os componentes foram divididos em camadas com responsabilidades claras:
 
 - `components/layout/` — componentes de página (Hero, HeroCard e seus componentes)
-- `components/ui/` — componentes reutilizáveis sem lógica de negócio (FieldButton, Counter, Alert)
+- `components/ui/` — componentes reutilizáveis sem lógica de negócio (FieldButton, Counter, Alert, BottomSheet)
 - `data/` — dados estáticos e regras de negócio (accommodations, tarifarioRules)
 - `types/` — interfaces compartilhadas entre componentes
 - `utils/` — funções puras e utilitários
@@ -136,6 +136,14 @@ A validação foi implementada manualmente em `utils/validation.ts` com mensagen
 ### Hook useError
 
 Hook customizado que encapsula o estado de erro e o auto-dismiss com `setTimeout`. Ao exibir um novo erro, o timeout anterior é cancelado antes de criar um novo, evitando comportamento inesperado em múltiplas validações consecutivas. A lógica foi extraída para um hook para evitar repetição nos componentes e manter o `HeroCard` focado apenas na orquestração do formulário.
+
+### Hook useIsMobile
+
+Hook customizado que detecta o tamanho da tela via `window.matchMedia`, reagindo a mudanças de viewport em tempo real. Os breakpoints são nomeados e alinhados com os padrões do Tailwind CSS v4. O estado inicial é calculado via lazy initializer no `useState` para evitar cascata de renders desnecessária e garantir compatibilidade com SSR no Next.js.
+
+### Responsividade e BottomSheet
+
+No desktop, os seletores de acomodação, datas e hóspedes abrem como popovers ancorados ao campo correspondente. No mobile, o mesmo conteúdo é exibido em um `BottomSheet` — um componente `ui/` reutilizável que usa o `<dialog>` nativo do HTML com `modal-bottom` do DaisyUI. Essa abordagem mantém a experiência adequada para toque sem duplicar lógica de negócio entre os dois layouts.
 
 ### react-day-picker
 
