@@ -1,21 +1,44 @@
 "use client";
 
-import { useRef } from "react";
+import { useState } from "react";
 
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { PickerProps } from "@/types/picker";
 import { pluralize } from "@/utils/string";
+import { BottomSheet } from "@ui/BottomSheet";
 import Counter from "@ui/Counter";
 import FieldButton from "@ui/FieldButton";
 
 interface Props extends PickerProps {
   value: number;
   onChange: (adults: number) => void;
-  popoverRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 function formatGuests(adults: number): string {
   if (adults === 0) return "Hóspedes?";
   return pluralize(adults, "hóspede", "hóspedes");
+}
+
+function GuestContent({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (adults: number) => void;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-8 p-4">
+      <p className="text-base" id="adults-label">
+        Adultos
+      </p>
+      <Counter
+        value={value}
+        min={0}
+        onChange={onChange}
+        aria-labelledby="adults-label"
+      />
+    </div>
+  );
 }
 
 export function GuestPicker({
@@ -24,10 +47,9 @@ export function GuestPicker({
   className,
   value,
   onChange,
-  popoverRef: externalRef,
 }: Props) {
-  const internalRef = useRef<HTMLDivElement>(null);
-  const popoverRef = externalRef ?? internalRef;
+  const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   return (
     <div
@@ -37,36 +59,32 @@ export function GuestPicker({
     >
       <FieldButton
         label="Quem"
-        popoverTarget="popover-guests"
-        anchorName="--anchor-guests"
+        popoverTarget={isMobile ? undefined : "popover-guests"}
+        anchorName={isMobile ? undefined : "--anchor-guests"}
         className="size-full"
+        onClick={isMobile ? () => setIsOpen(true) : undefined}
       >
         {formatGuests(value)}
       </FieldButton>
 
-      <div
-        ref={popoverRef}
-        role="dialog"
-        aria-label="Selecione o número de hóspedes"
-        className="dropdown card bg-base-100 mt-2 w-64 shadow-sm"
-        popover="auto"
-        id="popover-guests"
-        style={{ positionAnchor: "--anchor-guests" } as React.CSSProperties}
-      >
-        <div className="card-body p-4">
-          <div className="flex items-center justify-between">
-            <p className="text-base" id="adults-label">
-              Adultos
-            </p>
-            <Counter
-              value={value}
-              min={0}
-              onChange={onChange}
-              aria-labelledby="adults-label"
-            />
+      {isMobile ? (
+        <BottomSheet isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          <GuestContent value={value} onChange={onChange} />
+        </BottomSheet>
+      ) : (
+        <div
+          role="dialog"
+          aria-label="Selecione o número de hóspedes"
+          className="dropdown card bg-base-100 mt-2 w-64 shadow-sm"
+          popover="auto"
+          id="popover-guests"
+          style={{ positionAnchor: "--anchor-guests" } as React.CSSProperties}
+        >
+          <div className="card-body p-4">
+            <GuestContent value={value} onChange={onChange} />
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

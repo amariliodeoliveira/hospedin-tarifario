@@ -24,10 +24,10 @@ export function validateTarifarioForm({
 }): string | null {
   if (!accommodation) return ERRORS.noAccommodation;
 
-  if (!range?.from && !range?.to) return ERRORS.noRange;
+  if (!range?.from) return ERRORS.noRange;
   if (!range?.to) return ERRORS.noCheckOut;
 
-  const nights = countNights(range.from!, range.to);
+  const nights = countNights(range.from, range.to);
   if (nights < accommodation.minNights) {
     return ERRORS.minNights(accommodation.name, accommodation.minNights);
   }

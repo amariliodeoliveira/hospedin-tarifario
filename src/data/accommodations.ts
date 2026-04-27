@@ -8,7 +8,7 @@ export interface Accommodation {
   maxGuests: number;
 }
 
-export const accommodations: Accommodation[] = [
+export const accommodations: readonly Accommodation[] = [
   {
     id: "suite",
     name: "Suíte Jardim",
@@ -27,4 +27,4 @@ export const accommodations: Accommodation[] = [
     minNights: 2,
     maxGuests: 4,
   },
-];
+] as const;

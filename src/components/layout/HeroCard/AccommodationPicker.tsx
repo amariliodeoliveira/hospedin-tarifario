@@ -1,10 +1,12 @@
 "use client";
 
 import { HomeIcon } from "@heroicons/react/20/solid";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { PickerProps } from "@/types/picker";
 import { Accommodation, accommodations } from "@data/accommodations";
+import { BottomSheet } from "@ui/BottomSheet";
 import FieldButton from "@ui/FieldButton";
 import { hidePopover } from "@utils/popover";
 
@@ -41,6 +43,24 @@ function AccommodationOption({
   );
 }
 
+function AccommodationList({
+  onSelect,
+}: {
+  onSelect: (accommodation: Accommodation) => void;
+}) {
+  return (
+    <ul role="listbox" aria-label="Selecione uma acomodação">
+      {accommodations.map((item) => (
+        <AccommodationOption
+          key={item.id}
+          accommodation={item}
+          onSelect={onSelect}
+        />
+      ))}
+    </ul>
+  );
+}
+
 export function AccommodationPicker({
   onMouseEnter,
   onMouseLeave,
@@ -49,11 +69,17 @@ export function AccommodationPicker({
   onChange,
   onSelect,
 }: Props) {
-  const popoverRef = useRef<HTMLUListElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const isMobile = useIsMobile();
+  const popoverRef = useRef<HTMLDivElement>(null);
 
   function handleSelect(accommodation: Accommodation) {
     onChange(accommodation);
-    hidePopover(popoverRef.current);
+    if (isMobile) {
+      setIsOpen(false);
+    } else {
+      hidePopover(popoverRef.current);
+    }
     onSelect?.();
   }
 
@@ -65,32 +91,33 @@ export function AccommodationPicker({
     >
       <FieldButton
         label="Onde"
-        popoverTarget="popover-accommodation"
-        anchorName="--anchor-accommodation"
+        popoverTarget={isMobile ? undefined : "popover-accommodation"}
+        anchorName={isMobile ? undefined : "--anchor-accommodation"}
         className="size-full"
+        onClick={isMobile ? () => setIsOpen(true) : undefined}
       >
         {value?.name ?? "Acomodação"}
       </FieldButton>
 
-      <ul
-        ref={popoverRef}
-        role="listbox"
-        aria-label="Selecione uma acomodação"
-        className="dropdown menu rounded-box bg-base-100 mt-2 shadow-sm"
-        popover="auto"
-        id="popover-accommodation"
-        style={
-          { positionAnchor: "--anchor-accommodation" } as React.CSSProperties
-        }
-      >
-        {accommodations.map((item) => (
-          <AccommodationOption
-            key={item.id}
-            accommodation={item}
-            onSelect={handleSelect}
-          />
-        ))}
-      </ul>
+      {isMobile ? (
+        <BottomSheet isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          <AccommodationList onSelect={handleSelect} />
+        </BottomSheet>
+      ) : (
+        <div
+          ref={popoverRef}
+          role="listbox"
+          aria-label="Selecione uma acomodação"
+          className="dropdown menu rounded-box bg-base-100 mt-2 shadow-sm"
+          popover="auto"
+          id="popover-accommodation"
+          style={
+            { positionAnchor: "--anchor-accommodation" } as React.CSSProperties
+          }
+        >
+          <AccommodationList onSelect={handleSelect} />
+        </div>
+      )}
     </div>
   );
 }
