@@ -109,7 +109,7 @@ export default function HeroCard() {
         <div className="join-item self-stretch">
           <FieldButton
             type="submit"
-            className="h-full w-full rounded-tl-none rounded-tr-none lg:rounded-l-none lg:rounded-tl-md lg:rounded-tr-md"
+            className="lg:rounded-tr-(--radius-field) h-full w-full rounded-tl-none rounded-tr-none lg:rounded-l-none lg:rounded-tl-none"
             variant="primary"
           >
             <span className="font-medium">Calcular</span>
