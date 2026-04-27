@@ -46,10 +46,10 @@ export function TarifarioModal({ id, result }: Props) {
 
   return (
     <dialog id={id} className="modal modal-bottom sm:modal-middle">
-      <div className="card card-border bg-base-100 border-base-300 card-sm w-11/12 max-w-lg overflow-hidden">
+      <div className="card card-border bg-base-100 border-base-300 card-sm w-full overflow-hidden rounded-b-none rounded-t-2xl sm:w-11/12 sm:max-w-lg sm:rounded-2xl">
         {result && (
           <>
-            <div className="card-title border-base-300 items-center justify-between gap-0 border-b border-dashed p-6 pb-3">
+            <div className="card-title border-base-300 items-center justify-between gap-0 border-b border-dashed p-4 pb-3 sm:p-6">
               <h3 className="mb-1 text-lg font-bold">
                 {result.accommodationName}
               </h3>
@@ -65,7 +65,7 @@ export function TarifarioModal({ id, result }: Props) {
               </div>
             </div>
 
-            <div className="card-body divide-base-200 divide-y p-8">
+            <div className="card-body divide-base-200 divide-y p-4 sm:p-8">
               <div className="space-y-1 pb-2">
                 <ResultRow
                   label="Diárias"
@@ -115,7 +115,7 @@ export function TarifarioModal({ id, result }: Props) {
           </>
         )}
 
-        <div className="bg-base-300 px-8 py-6">
+        <div className="bg-base-300 px-4 py-4 sm:px-8 sm:py-6">
           <form method="dialog">
             <button className="btn btn-primary btn-block">Fechar</button>
           </form>

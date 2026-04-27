@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { DateRange } from "react-day-picker";
 
 import { useError } from "@/hooks/useError";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   calculateTarifario,
   TarifarioResult,
@@ -23,12 +24,13 @@ type Section = "dates" | "adults" | "accommodation";
 function Divider({ hidden }: { hidden: boolean }) {
   return (
     <div
-      className={`divider lg:divider-horizontal m-0 w-0 py-2 transition-opacity ${hidden ? "opacity-0" : "opacity-100"}`}
+      className={`divider lg:divider-horizontal m-0 py-2 transition-opacity ${hidden ? "opacity-0" : "opacity-100"}`}
     />
   );
 }
 
 export default function HeroCard() {
+  const isMobile = useIsMobile();
   const [hoveredSection, setHoveredSection] = useState<Section | null>(null);
   const [accommodation, setAccommodation] = useState<Accommodation | null>(
     null,
@@ -39,7 +41,8 @@ export default function HeroCard() {
   const { error, showError } = useError();
 
   const datePopoverRef = useRef<HTMLDivElement>(null);
-  const guestPopoverRef = useRef<HTMLDivElement>(null);
+
+  const isDividerHidden = !isMobile && !!hoveredSection;
 
   function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
@@ -56,7 +59,7 @@ export default function HeroCard() {
 
     const tarifario = calculateTarifario({
       accommodation: accommodation!,
-      range: range!,
+      range: range as { from: Date; to: Date },
       adults,
     });
     setResult(tarifario);
@@ -80,7 +83,7 @@ export default function HeroCard() {
           onSelect={() => datePopoverRef.current?.showPopover()}
         />
 
-        <Divider hidden={!!hoveredSection} />
+        <Divider hidden={isDividerHidden} />
 
         <DateRangePicker
           className="flex-1"
@@ -88,18 +91,17 @@ export default function HeroCard() {
           onChange={setRange}
           minNights={accommodation?.minNights}
           popoverRef={datePopoverRef}
-          onClose={() => guestPopoverRef.current?.showPopover()}
+          onClose={() => setHoveredSection(null)}
           onMouseEnter={() => setHoveredSection("dates")}
           onMouseLeave={() => setHoveredSection(null)}
         />
 
-        <Divider hidden={!!hoveredSection} />
+        <Divider hidden={isDividerHidden} />
 
         <GuestPicker
           className="join-item flex-1"
           value={adults}
           onChange={setAdults}
-          popoverRef={guestPopoverRef}
           onMouseEnter={() => setHoveredSection("adults")}
           onMouseLeave={() => setHoveredSection(null)}
         />
@@ -107,7 +109,7 @@ export default function HeroCard() {
         <div className="join-item self-stretch">
           <FieldButton
             type="submit"
-            className="h-full rounded-l-none"
+            className="h-full w-full rounded-tl-none rounded-tr-none lg:rounded-l-none lg:rounded-tl-md lg:rounded-tr-md"
             variant="primary"
           >
             <span className="font-medium">Calcular</span>

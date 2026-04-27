@@ -1,5 +1,3 @@
-import { DateRange } from "react-day-picker";
-
 import { Accommodation } from "@data/accommodations";
 
 const WEEKEND_SURCHARGE_RATE = 0.2;
@@ -9,7 +7,7 @@ const EXTRA_GUEST_RATE_PER_NIGHT = 50;
 
 interface TarifarioInput {
   accommodation: Accommodation;
-  range: DateRange;
+  range: { from: Date; to: Date };
   adults: number;
 }
 
@@ -17,7 +15,6 @@ export interface TarifarioResult {
   accommodationName: string;
   nights: number;
   dailiesBase: number;
-  dailiesTotal: number;
   weekendSurcharge: number;
   adults: number;
   extraGuestFee: number;
@@ -49,7 +46,7 @@ export function calculateTarifario({
   adults,
 }: TarifarioInput): TarifarioResult {
   const { from, to } = range;
-  const days = eachDay(from!, to!);
+  const days = eachDay(from, to);
   const nights = days.length;
 
   let dailiesBase = 0;
@@ -67,7 +64,6 @@ export function calculateTarifario({
   }
 
   const dailiesTotal = dailiesBase + weekendSurcharge;
-
   const extraGuests = Math.max(0, adults - accommodation.maxGuests);
   const extraGuestFee = extraGuests * EXTRA_GUEST_RATE_PER_NIGHT * nights;
 
@@ -80,7 +76,6 @@ export function calculateTarifario({
     accommodationName: accommodation.name,
     nights,
     dailiesBase,
-    dailiesTotal,
     weekendSurcharge,
     adults,
     extraGuestFee,
