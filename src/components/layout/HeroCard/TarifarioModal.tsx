@@ -1,3 +1,4 @@
+import { TARIFARIO_RULES } from "@data/tarifarioRules";
 import { TarifarioResult } from "@utils/calculateTarifario";
 import { formatBRL } from "@utils/currency";
 import { pluralize } from "@utils/string";
@@ -10,15 +11,26 @@ interface Props {
 interface ResultRowProps {
   label: string;
   value: string;
+  description?: string;
   highlight?: boolean;
 }
 
-function ResultRow({ label, value, highlight = false }: ResultRowProps) {
+function ResultRow({
+  label,
+  value,
+  description,
+  highlight = false,
+}: ResultRowProps) {
   return (
     <div
       className={`flex justify-between py-1 ${highlight ? "text-base font-bold" : "text-sm"}`}
     >
-      <span>{label}</span>
+      <div>
+        <span>{label}</span>
+        {description && (
+          <p className="text-base-content/40 text-xs">{description}</p>
+        )}
+      </div>
       <span>{value}</span>
     </div>
   );
@@ -41,7 +53,6 @@ export function TarifarioModal({ id, result }: Props) {
               <h3 className="mb-1 text-lg font-bold">
                 {result.accommodationName}
               </h3>
-
               <div className="flex gap-2">
                 {badges.map((badge) => (
                   <span
@@ -54,7 +65,7 @@ export function TarifarioModal({ id, result }: Props) {
               </div>
             </div>
 
-            <div className="card-body divide-base-200 gap-4 divide-y p-8">
+            <div className="card-body divide-base-200 divide-y p-8">
               <div className="space-y-1 pb-2">
                 <ResultRow
                   label="Diárias"
@@ -64,12 +75,14 @@ export function TarifarioModal({ id, result }: Props) {
                   <ResultRow
                     label="Acréscimo fim de semana"
                     value={formatBRL(result.weekendSurcharge)}
+                    description={TARIFARIO_RULES.weekendSurcharge}
                   />
                 )}
                 {result.extraGuestFee > 0 && (
                   <ResultRow
                     label={`Hóspedes extras (${result.extraGuests} além do limite de ${result.maxGuests})`}
                     value={formatBRL(result.extraGuestFee)}
+                    description={TARIFARIO_RULES.extraGuest}
                   />
                 )}
                 <ResultRow
@@ -83,6 +96,7 @@ export function TarifarioModal({ id, result }: Props) {
                   <ResultRow
                     label="Desconto estadia longa (10%)"
                     value={`-${formatBRL(result.discount)}`}
+                    description={TARIFARIO_RULES.longStayDiscount}
                   />
                 </div>
               )}

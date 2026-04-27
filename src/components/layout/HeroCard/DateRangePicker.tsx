@@ -12,6 +12,7 @@ import { hidePopover } from "@utils/popover";
 interface Props extends PickerProps {
   value: DateRange | undefined;
   onChange: (range: DateRange | undefined) => void;
+  minNights?: number;
   popoverRef?: React.RefObject<HTMLDivElement | null>;
   onClose?: () => void;
 }
@@ -24,6 +25,7 @@ export function DateRangePicker({
   className,
   value,
   onChange,
+  minNights,
   popoverRef: externalRef,
   onClose,
 }: Props) {
@@ -74,7 +76,7 @@ export function DateRangePicker({
           onSelect={handleSelect}
           resetOnSelect
           required
-          min={2}
+          min={minNights}
           disabled={{ before: tomorrow }}
           excludeDisabled
           autoFocus

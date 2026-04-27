@@ -3,11 +3,14 @@
 import { useRef, useState } from "react";
 import { DateRange } from "react-day-picker";
 
+import { useError } from "@/hooks/useError";
 import {
   calculateTarifario,
   TarifarioResult,
 } from "@/utils/calculateTarifario";
+import { validateTarifarioForm } from "@/utils/validation";
 import { Accommodation } from "@data/accommodations";
+import { Alert } from "@ui/Alert";
 import FieldButton from "@ui/FieldButton";
 
 import { AccommodationPicker } from "./AccommodationPicker";
@@ -32,17 +35,30 @@ export default function HeroCard() {
   );
   const [range, setRange] = useState<DateRange | undefined>();
   const [adults, setAdults] = useState(0);
+  const [result, setResult] = useState<TarifarioResult | null>(null);
+  const { error, showError } = useError();
 
   const datePopoverRef = useRef<HTMLDivElement>(null);
   const guestPopoverRef = useRef<HTMLDivElement>(null);
 
-  const [result, setResult] = useState<TarifarioResult | null>(null);
-
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
-    if (!accommodation || !range?.from || !range?.to || adults === 0) return;
 
-    const tarifario = calculateTarifario({ accommodation, range, adults });
+    const validationError = validateTarifarioForm({
+      accommodation,
+      range,
+      adults,
+    });
+    if (validationError) {
+      showError(validationError);
+      return;
+    }
+
+    const tarifario = calculateTarifario({
+      accommodation: accommodation!,
+      range: range!,
+      adults,
+    });
     setResult(tarifario);
     (
       document.getElementById("tarifario-modal") as HTMLDialogElement
@@ -70,6 +86,7 @@ export default function HeroCard() {
           className="flex-1"
           value={range}
           onChange={setRange}
+          minNights={accommodation?.minNights}
           popoverRef={datePopoverRef}
           onClose={() => guestPopoverRef.current?.showPopover()}
           onMouseEnter={() => setHoveredSection("dates")}
@@ -99,6 +116,12 @@ export default function HeroCard() {
       </form>
 
       <TarifarioModal id="tarifario-modal" result={result} />
+
+      {error && (
+        <div className="toast toast-bottom toast-center">
+          <Alert type="warning" message={error} />
+        </div>
+      )}
     </>
   );
 }
