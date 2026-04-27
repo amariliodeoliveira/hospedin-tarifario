@@ -16,6 +16,7 @@ interface TarifarioInput {
 export interface TarifarioResult {
   accommodationName: string;
   nights: number;
+  dailiesBase: number;
   dailiesTotal: number;
   weekendSurcharge: number;
   adults: number;
@@ -51,7 +52,7 @@ export function calculateTarifario({
   const days = eachDay(from!, to!);
   const nights = days.length;
 
-  let dailiesTotal = 0;
+  let dailiesBase = 0;
   let weekendSurcharge = 0;
 
   for (const day of days) {
@@ -59,11 +60,13 @@ export function calculateTarifario({
     if (isWeekend(day)) {
       const surcharge = rate * WEEKEND_SURCHARGE_RATE;
       weekendSurcharge += surcharge;
-      dailiesTotal += rate + surcharge;
+      dailiesBase += rate;
     } else {
-      dailiesTotal += rate;
+      dailiesBase += rate;
     }
   }
+
+  const dailiesTotal = dailiesBase + weekendSurcharge;
 
   const extraGuests = Math.max(0, adults - accommodation.maxGuests);
   const extraGuestFee = extraGuests * EXTRA_GUEST_RATE_PER_NIGHT * nights;
@@ -76,6 +79,7 @@ export function calculateTarifario({
   return {
     accommodationName: accommodation.name,
     nights,
+    dailiesBase,
     dailiesTotal,
     weekendSurcharge,
     adults,

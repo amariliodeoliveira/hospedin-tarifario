@@ -69,7 +69,7 @@ export function TarifarioModal({ id, result }: Props) {
               <div className="space-y-1 pb-2">
                 <ResultRow
                   label="Diárias"
-                  value={formatBRL(result.dailiesTotal)}
+                  value={formatBRL(result.dailiesBase)}
                 />
                 {result.weekendSurcharge > 0 && (
                   <ResultRow
@@ -85,10 +85,6 @@ export function TarifarioModal({ id, result }: Props) {
                     description={TARIFARIO_RULES.extraGuest}
                   />
                 )}
-                <ResultRow
-                  label="Taxa de limpeza"
-                  value={formatBRL(result.cleaningFee)}
-                />
               </div>
 
               {result.discount > 0 && (
@@ -100,6 +96,13 @@ export function TarifarioModal({ id, result }: Props) {
                   />
                 </div>
               )}
+
+              <div className="py-3">
+                <ResultRow
+                  label="Taxa de limpeza"
+                  value={formatBRL(result.cleaningFee)}
+                />
+              </div>
 
               <div>
                 <ResultRow
