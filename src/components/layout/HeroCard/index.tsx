@@ -3,16 +3,20 @@
 import { useRef, useState } from "react";
 import { DateRange } from "react-day-picker";
 
+import { useError } from "@/hooks/useError";
 import {
   calculateTarifario,
   TarifarioResult,
 } from "@/utils/calculateTarifario";
+import { validateTarifarioForm } from "@/utils/validation";
 import { Accommodation } from "@data/accommodations";
+import { Alert } from "@ui/Alert";
 import FieldButton from "@ui/FieldButton";
 
 import { AccommodationPicker } from "./AccommodationPicker";
 import { DateRangePicker } from "./DateRangePicker";
 import { GuestPicker } from "./GuestPicker";
+import { TarifarioModal } from "./TarifarioModal";
 
 type Section = "dates" | "adults" | "accommodation";
 
@@ -31,67 +35,93 @@ export default function HeroCard() {
   );
   const [range, setRange] = useState<DateRange | undefined>();
   const [adults, setAdults] = useState(0);
+  const [result, setResult] = useState<TarifarioResult | null>(null);
+  const { error, showError } = useError();
 
   const datePopoverRef = useRef<HTMLDivElement>(null);
   const guestPopoverRef = useRef<HTMLDivElement>(null);
 
-  const [, setResult] = useState<TarifarioResult | null>(null);
-
-  function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
-    if (!accommodation || !range?.from || !range?.to) return;
 
-    const tarifario = calculateTarifario({ accommodation, range, adults });
+    const validationError = validateTarifarioForm({
+      accommodation,
+      range,
+      adults,
+    });
+    if (validationError) {
+      showError(validationError);
+      return;
+    }
+
+    const tarifario = calculateTarifario({
+      accommodation: accommodation!,
+      range: range!,
+      adults,
+    });
     setResult(tarifario);
-    alert(JSON.stringify(tarifario, null, 2));
+    (
+      document.getElementById("tarifario-modal") as HTMLDialogElement
+    )?.showModal();
   }
 
   return (
-    <form
-      className="card join join-vertical lg:join-horizontal bg-base-100 relative w-full shadow-sm"
-      onSubmit={handleSubmit}
-    >
-      <AccommodationPicker
-        className="flex-1"
-        value={accommodation}
-        onChange={setAccommodation}
-        onMouseEnter={() => setHoveredSection("accommodation")}
-        onMouseLeave={() => setHoveredSection(null)}
-        onSelect={() => datePopoverRef.current?.showPopover()}
-      />
+    <>
+      <form
+        className="card join join-vertical lg:join-horizontal bg-base-100 relative w-full shadow-sm"
+        onSubmit={handleSubmit}
+      >
+        <AccommodationPicker
+          className="flex-1"
+          value={accommodation}
+          onChange={setAccommodation}
+          onMouseEnter={() => setHoveredSection("accommodation")}
+          onMouseLeave={() => setHoveredSection(null)}
+          onSelect={() => datePopoverRef.current?.showPopover()}
+        />
 
-      <Divider hidden={!!hoveredSection} />
+        <Divider hidden={!!hoveredSection} />
 
-      <DateRangePicker
-        className="flex-1"
-        value={range}
-        onChange={setRange}
-        popoverRef={datePopoverRef}
-        onClose={() => guestPopoverRef.current?.showPopover()}
-        onMouseEnter={() => setHoveredSection("dates")}
-        onMouseLeave={() => setHoveredSection(null)}
-      />
+        <DateRangePicker
+          className="flex-1"
+          value={range}
+          onChange={setRange}
+          minNights={accommodation?.minNights}
+          popoverRef={datePopoverRef}
+          onClose={() => guestPopoverRef.current?.showPopover()}
+          onMouseEnter={() => setHoveredSection("dates")}
+          onMouseLeave={() => setHoveredSection(null)}
+        />
 
-      <Divider hidden={!!hoveredSection} />
+        <Divider hidden={!!hoveredSection} />
 
-      <GuestPicker
-        className="join-item flex-1"
-        value={adults}
-        onChange={setAdults}
-        popoverRef={guestPopoverRef}
-        onMouseEnter={() => setHoveredSection("adults")}
-        onMouseLeave={() => setHoveredSection(null)}
-      />
+        <GuestPicker
+          className="join-item flex-1"
+          value={adults}
+          onChange={setAdults}
+          popoverRef={guestPopoverRef}
+          onMouseEnter={() => setHoveredSection("adults")}
+          onMouseLeave={() => setHoveredSection(null)}
+        />
 
-      <div className="join-item self-stretch">
-        <FieldButton
-          type="submit"
-          className="h-full rounded-l-none"
-          variant="primary"
-        >
-          <span className="font-medium">Calcular</span>
-        </FieldButton>
-      </div>
-    </form>
+        <div className="join-item self-stretch">
+          <FieldButton
+            type="submit"
+            className="h-full rounded-l-none"
+            variant="primary"
+          >
+            <span className="font-medium">Calcular</span>
+          </FieldButton>
+        </div>
+      </form>
+
+      <TarifarioModal id="tarifario-modal" result={result} />
+
+      {error && (
+        <div className="toast toast-bottom toast-center">
+          <Alert type="warning" message={error} />
+        </div>
+      )}
+    </>
   );
 }
